@@ -1,0 +1,1 @@
+import{d as o,_ as t,r as s,o as n,c as _,a as c}from"./index-d37d52a9.js";const a=o({components:{},setup(){}});const r={class:"homeBox"};function p(d,m,i,u,l,f){const e=s("router-view");return n(),_("div",r,[c(e)])}const x=t(a,[["render",p],["__scopeId","data-v-d3ea3cb3"]]);export{x as default};
