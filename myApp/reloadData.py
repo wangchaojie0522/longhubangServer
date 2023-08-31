@@ -2,7 +2,7 @@
 Author: chaojiewang chaojiewang@deepglint.com
 Date: 2023-06-05 18:37:29
 LastEditors: chaojiewang chaojiewang@deepglint.com
-LastEditTime: 2023-08-31 16:50:11
+LastEditTime: 2023-08-31 19:47:53
 FilePath: \webserve\myApp\views.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -17,6 +17,9 @@ from .models import GPList
 res =  {
         "code": 0,
         "data": [],
+        "volavg": 0,
+        "minVal": 0,
+        "maxVal": 0,
         "msg": ""
 }
 #获取当前交易日最新的股票代码和简称
@@ -52,12 +55,44 @@ def gupiaoRL(request):
         res['code'] = 1
         res['msg'] = "request method not is require!"
         return JsonResponse(res)
-def gupiaoK(request):
-    if request.method == 'POST':
+def gupiaoKInfo(request):
+    if request.method == 'GET':
+        tscodeP = request.GET.get('tscode') or ""
+        start_dateP = request.GET.get('start_date') or ""
+        end_dateP = request.GET.get('end_date') or ""
+        gupiao_list = []
+        df = pro.query('daily', ts_code=tscodeP, start_date=start_dateP, end_date=end_dateP)
+        df.sort_values("trade_date",inplace=True)
+        print(df)
+
+        volavg = df['vol'].mean()
+        minVal = df['high'].mean()
+        maxVal = df['low'].mean()
+        print(volavg)
+        for index, item in df.iterrows():
+            gupiao_list.append(
+                {
+                    'ts_code': item['ts_code'],
+                    'trade_date':item['trade_date'],
+                    'open':item['open'],
+                    'high':item['high'],
+                    'low':item['low'],
+                    'close':item['close'],
+                    'pre_close':item['pre_close'],
+                    'change':item['change'],
+                    'pct_chg':item['pct_chg'],
+                    'vol':item['vol'],
+                    'amount':item['amount'],
+                }
+            )
+        print(gupiao_list)
         res['code'] = 200
-        res['msg'] = "数据库已更新!"
-        
-        return JsonResponse(res)
+        res['msg'] = "查询成功"
+        res['volavg'] = volavg
+        res['minVal'] = minVal
+        res['maxVal'] = maxVal
+        res['data'] = gupiao_list
+        return JsonResponse(res, safe=False, json_dumps_params={'ensure_ascii': False})
     else:
         res['code'] = 1
         res['msg'] = "request method not is require!"
