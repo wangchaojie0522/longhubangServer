@@ -13,5 +13,6 @@ from myApp import reloadData
 
 urlpatterns = [
     path('gupiao/', views.gupiao),
-    path('gupiao/reload/', reloadData.gupiaoRL)
+    path('gupiao/reload/', reloadData.gupiaoRL),
+    path('gupiao/k/', reloadData.gupiaoK)
 ]
