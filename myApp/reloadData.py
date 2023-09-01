@@ -2,7 +2,7 @@
 Author: chaojiewang chaojiewang@deepglint.com
 Date: 2023-06-05 18:37:29
 LastEditors: chaojiewang chaojiewang@deepglint.com
-LastEditTime: 2023-08-31 19:47:53
+LastEditTime: 2023-09-01 10:11:05
 FilePath: \webserve\myApp\views.py
 Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 '''
@@ -60,15 +60,24 @@ def gupiaoKInfo(request):
         tscodeP = request.GET.get('tscode') or ""
         start_dateP = request.GET.get('start_date') or ""
         end_dateP = request.GET.get('end_date') or ""
+        ktypeP = request.GET.get('ktype') or "d"
         gupiao_list = []
-        df = pro.query('daily', ts_code=tscodeP, start_date=start_dateP, end_date=end_dateP)
-        df.sort_values("trade_date",inplace=True)
-        print(df)
+        if ktypeP == 'd':
+            df = pro.daily(ts_code=tscodeP, start_date=start_dateP, end_date=end_dateP)
+            df.sort_values("trade_date",inplace=True)
+        elif ktypeP == 'w':
+            df = pro.weekly(ts_code=tscodeP, start_date=start_dateP, end_date=end_dateP)
+            df.sort_values("trade_date",inplace=True)
+        elif ktypeP == 'm':
+            df = pro.monthly(ts_code=tscodeP, start_date=start_dateP, end_date=end_dateP)
+            df.sort_values("trade_date",inplace=True)
+        else:
+            df = pro.daily(ts_code=tscodeP, start_date=start_dateP, end_date=end_dateP)
+            df.sort_values("trade_date",inplace=True)
 
         volavg = df['vol'].mean()
         minVal = df['high'].mean()
         maxVal = df['low'].mean()
-        print(volavg)
         for index, item in df.iterrows():
             gupiao_list.append(
                 {
