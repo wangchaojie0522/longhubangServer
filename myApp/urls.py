@@ -10,6 +10,7 @@ Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查�
 from django.urls import path
 from myApp.API import gpData
 from myApp.API import etfData
+from myApp.API import ztData
 
 urlpatterns = [
     path('gupiao/list/', gpData.gupiao),
@@ -18,4 +19,5 @@ urlpatterns = [
     path('etf/list/', etfData.etf),
     path('etf/reload/', etfData.etfRL),
     path('etf/kinfo/', etfData.etfKInfo),
+    path('lhb/zhangting/', ztData.ztList),
 ]
